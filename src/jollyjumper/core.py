@@ -25,7 +25,7 @@ def get_enjambment(text):
             enjambments[token._.line] = ('tmesis', token.text.split('-\n'))  # noqa
             continue
         # Last token cannot be the beginning of an enjambment (unless it's tmesis)
-        if token is doc[-1]:
+        if token == doc[-1]:
             continue
         previous_token = doc[token.i-1]
         next_token = doc[token.i + 1]

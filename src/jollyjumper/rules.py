@@ -27,14 +27,14 @@ def get_sirrematic_enjambment(previous_token, next_token):
     return None
 
 
-def get_sirrematic_relation_words_preposition_enjambment(previous_token):
+def get_sirrematic_relation_words_preposition_enjambment(previous_token, next_token):
     """
     Checks if sirrematic enjambment exists between two lines
     :param previous_token: The word before a newline character
     :return: Sirrematic type or None if not found
     """
     if previous_token.lower_ in ENJAMBMENT_PREPOSITIONS and re.search('AdpType=Prep', previous_token.tag_):
-        return previous_token.pos_
+        return [previous_token.pos_, next_token.pos_]
     return None
 
 
@@ -107,9 +107,10 @@ def get_sirrematic_prepositional_enjambment(previous_token, next_token):
     :param next_token: The word before a newline character
     :return: Sirrematic type or None if not found
     """
-    if previous_token.pos_ in ('ADJ', 'ADV', 'NOUN') and re.search('AdpType=Prep', next_token.tag_) and \
-            previous_token.lower in next_token.nbor().ancestors:
-        return [previous_token.pos_, 'PREP']
+    if next_token.n_rights > 0:
+        if previous_token.pos_ in ('ADJ', 'ADV', 'NOUN') and re.search('AdpType=Prep', next_token.tag_) and \
+                previous_token.lower in next_token.nbor().ancestors:
+            return [previous_token.pos_, 'PREP']
     return None
 
 
@@ -120,11 +121,12 @@ def get_sirrematic_prepositional_without_de_enjambment(previous_token, next_toke
     :param next_token: The word before a newline character
     :return: Sirrematic type or None if not found
     """
-    if previous_token.pos_ in ('ADJ', 'NOUN')\
-            and re.search('AdpType=Prep', next_token.tag_)\
-            and next_token.lower_ not in ('de', 'del')\
-            and previous_token.lower in next_token.nbor().ancestors:
-        return [previous_token.pos_, 'PREP']
+    if next_token.n_rights > 0:
+        if previous_token.pos_ in ('ADJ', 'NOUN')\
+                and re.search('AdpType=Prep', next_token.tag_)\
+                and next_token.lower_ not in ('de', 'del')\
+                and previous_token.lower in next_token.nbor().ancestors:
+            return [previous_token.pos_, 'PREP']
     return None
 
 
@@ -135,11 +137,12 @@ def get_sirrematic_prepositional_prep_before_noun_or_adjective_enjambment(previo
     :param next_token: The word before a newline character
     :return: Sirrematic type or None if not found
     """
-    if previous_token.dep_ in ('ROOT', 'nsubj') and previous_token.pos_ == 'NOUN'\
-            and re.search('AdpType=Prep', next_token.tag_)\
-            and next_token.lower_ not in ('de', 'del')\
-            and previous_token.lower in next_token.nbor().ancestors:
-        return [previous_token.pos_, 'PREP']
+    if next_token.n_rights > 0:
+        if previous_token.dep_ in ('ROOT', 'nsubj') and previous_token.pos_ == 'NOUN'\
+                and re.search('AdpType=Prep', next_token.tag_)\
+                and next_token.lower_ not in ('de', 'del')\
+                and previous_token.lower in next_token.nbor().ancestors:
+            return [previous_token.pos_, 'PREP']
     return None
 
 
@@ -150,9 +153,10 @@ def get_link_enjambment(previous_token, next_token):
     :param next_token: The word before a newline character
     :return: Link type or None if not found
     """
-    if previous_token.dep_ in ('ROOT', 'nsubj') and (
-            previous_token.lower in next_token.head or previous_token.lower in next_token.nbor().ancestors):
-        return [previous_token.pos_, next_token.pos_]
+    if next_token.n_rights > 0:
+        if previous_token.dep_ in ('ROOT', 'nsubj') and (
+                previous_token.lower in next_token.head or previous_token.lower in next_token.nbor().ancestors):
+            return [previous_token.pos_, next_token.pos_]
     return None
 
 
