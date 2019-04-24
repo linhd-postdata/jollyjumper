@@ -12,7 +12,10 @@ def get_enjambment(text):
     :param text: String with the original poem
     :return: Dictionary of all enjambment types and their lines of occurrence
     """
-    enjambment_types = ['sirrematic']
+    enjambment_types = ['sirrematic', 'sirrematic_relation_words_preposition', 'sirrematic_relation_words_conjunction',
+                        'sirrematic_relation_words_determiners', 'sirrematic_orational', 'relation_words_verbs',
+                        'sirrematic_with_verb', 'link', 'sirrematic_prepositional_without_de',
+                        'sirrematic_prepositional', 'sirrematic_prepositional_prep_before_noun_or_adjective']
     enjambments = {}
     nlp = load_pipeline()
     doc = nlp(text)
