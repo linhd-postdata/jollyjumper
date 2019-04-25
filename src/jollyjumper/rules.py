@@ -148,7 +148,7 @@ def get_sirrematic_prepositional_prep_before_noun_or_adjective_enjambment(previo
 
 def get_link_enjambment(previous_token, next_token):
     """
-    Checks if sirrematic enjambment exists between two lines
+    Checks if a link enjambment exists between two lines
     :param previous_token: The word before a newline character
     :param next_token: The word before a newline character
     :return: Link type or None if not found
