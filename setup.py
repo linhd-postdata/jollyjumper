@@ -19,17 +19,22 @@ from setuptools.command.install import install
 class InstallWrapper(install):
     def run(self):
         self._download_spacy_es()
+        self._download_spacy_affixes_es()
         install.run(self)
 
     def _download_spacy_es(self):
         from spacy.cli import download
         download('es_core_news_md')
 
+    def _download_spacy_affixes_es(self):
+        from spacy_affixes.utils import download
+        download(lang='es')
+
 
 def read(*names, **kwargs):
     with io.open(
-        join(dirname(__file__), *names),
-        encoding=kwargs.get('encoding', 'utf8')
+            join(dirname(__file__), *names),
+            encoding=kwargs.get('encoding', 'utf8')
     ) as fh:
         return fh.read()
 
@@ -40,7 +45,8 @@ setup(
     license='Apache Software License 2.0',
     description='Enjambment tool for Spanish texts',
     long_description='%s\n%s' % (
-        re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.rst')),
+        re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read(
+            'README.rst')),
         re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))
     ),
     author='LINHD POSTDATA Project',
