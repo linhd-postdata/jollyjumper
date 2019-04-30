@@ -1,113 +1,79 @@
-import spacy
+from unittest import mock
 
+import jollyjumper.core
 from jollyjumper.core import get_enjambment
-from jollyjumper.rules import get_link_enjambment
-from jollyjumper.rules import get_sirrematic_enjambment
-from jollyjumper.rules import get_sirrematic_orational_enjambment
-from jollyjumper.rules import get_sirrematic_prepositional_enjambment
-from jollyjumper.rules import get_sirrematic_prepositional_prep_before_noun_or_adjective_enjambment
-from jollyjumper.rules import get_sirrematic_prepositional_without_de_enjambment
-from jollyjumper.rules import get_sirrematic_relation_words_conjunction_enjambment
-from jollyjumper.rules import get_sirrematic_relation_words_determiners_enjambment
-from jollyjumper.rules import get_sirrematic_relation_words_preposition_enjambment
-from jollyjumper.rules import get_sirrematic_relation_words_verbs_enjambment
-from jollyjumper.rules import get_sirrematic_with_verb_enjambment
-
-nlp = spacy.load('es_core_news_md')
-
-def test_get_sirrematic_enjambment_ADJ_NOUN():
-    text = nlp("verde casa")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_enjambment(previous_token, next_token) == ['ADJ', 'NOUN']
 
 
-def test_get_sirrematic_enjambment_ADV_NOUN():
-    text = nlp("malamente casa")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_enjambment(previous_token, next_token) == ['ADV', 'NOUN']
+class TokenMock(mock.MagicMock):
+    _ = property(lambda self: mock.Mock(has_tmesis=self.has_tmesis,
+                                        line=self.line))
+
+    @staticmethod
+    def is_ancestor(token):  # noqa
+        return True
+
+    @staticmethod
+    def nbor():  # noqa
+        return TokenMock()
 
 
-def test_get_sirrematic_enjambment_ADP_ADJ():
-    text = nlp("con verde")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_enjambment(previous_token, next_token) == ['ADP', 'ADJ']
+def test_get_enjambment_tmesis(monkeypatch):
+    def mockreturn(lang=None):
+        return lambda _: [
+            TokenMock(text="mi-\nra", i=0, is_punct=False, has_tmesis=True,
+                      line=1)
+        ]
+
+    monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
+    enjambment = get_enjambment("text")
+    assert enjambment == {1: ('tmesis', ['mi', 'ra'])}
 
 
-def test_get_sirrematic_enjambment_ADP_NOUN():
-    text = nlp("con casa")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_enjambment(previous_token, next_token) == ['ADP', 'NOUN']
+def test_get_enjambment_no_tmesis(monkeypatch):
+    def mockreturn(lang=None):
+        return lambda _: [
+            TokenMock(text="mi\nra", i=0, is_punct=False, has_tmesis=False,
+                      line=1)
+        ]
+
+    monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
+    enjambment = get_enjambment("text")
+    assert enjambment == {}
 
 
-def test_get_sirrematic_enjambment_ADJ_ADV():
-    text = nlp("verde malamente")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_enjambment(previous_token, next_token) == ['ADV', 'VERB']
+def test_get_enjambment(monkeypatch):
+    def mockreturn(lang=None):
+        return lambda _: [
+            TokenMock(n_rights=1, tag_="NumType", pos_="ADJ", text="mi", i=0,
+                      is_punct=False, has_tmesis=False,
+                      line=0),
+            TokenMock(n_rights=1, tag_="NumType", pos_="SPACE", text="\n", i=1,
+                      is_punct=False, has_tmesis=False,
+                      line=0),
+            TokenMock(n_rights=1, tag_="NumType", pos_="NOUN", text="casa", i=2,
+                      is_punct=False, has_tmesis=False,
+                      line=1)
+        ]
+
+    monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
+    enjambment = get_enjambment("text")
+    assert enjambment == {0: ('sirrematic', ['ADJ', 'NOUN'])}
 
 
-def test_get_sirrematic_enjambment_ADV_VERB():
-    text = nlp("vende malamente")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_enjambment(previous_token, next_token) == ['ADV', 'VERB']
+def test_get_enjambment_empty(monkeypatch):
+    def mockreturn(lang=None):
+        return lambda _: [
+            TokenMock(n_rights=1, tag_="NumType", pos_="ADJ", text="mi-", i=0,
+                      is_punct=False, has_tmesis=False,
+                      line=1),
+            TokenMock(n_rights=1, tag_="NumType", pos_="SPACE", text="\n", i=0,
+                      is_punct=False, has_tmesis=False,
+                      line=1),
+            TokenMock(n_rights=1, tag_="NumType", pos_="NOUN", text="ro", i=0,
+                      is_punct=False, has_tmesis=False,
+                      line=2)
+        ]
 
-
-def test_get_sirrematic_relation_words_preposition_enjambment():
-    text = nlp("con cosas")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_relation_words_preposition_enjambment(previous_token, next_token) == ['ADP', 'NOUN']
-
-
-def test_get_sirrematic_relation_words_conjunction_enjambment():
-    text = nlp("y cosas")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_relation_words_preposition_enjambment(previous_token, next_token) == ['CONJ', 'NOUN']
-
-
-def test_get_sirrematic_relation_words_determiners_enjambment_DET_NOUN():
-    text = nlp("mis cosas")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_relation_words_preposition_enjambment(previous_token, next_token) == ['DET', 'NOUN']
-
-
-def test_get_sirrematic_relation_words_determiners_enjambment_DET_ADJ():
-    text = nlp("mis verdes")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_relation_words_preposition_enjambment(previous_token, next_token) == ['DET', 'ADJ']
-
-
-def test_get_sirrematic_relation_words_determiners_enjambment_DET_ADV():
-    text = nlp("mis malamente")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_relation_words_preposition_enjambment(previous_token, next_token) == ['DET', 'ADV']
-
-
-def test_get_sirrematic_relation_words_determiners_enjambment_DET_DET():
-    text = nlp("mis mi")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_relation_words_preposition_enjambment(previous_token, next_token) == ['DET', 'DET']
-
-
-def test_get_sirrematic_with_verb_enjambment_AUX_VERB():
-    text = nlp("ha hecho")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_with_verb_enjambment(previous_token, next_token) == ['AUX', 'VERB']
-
-
-def test_get_sirrematic_with_verb_enjambment_VERB_VERB():
-    text = nlp("comer comiendo")
-    previous_token = text[0]
-    next_token = text[1]
-    assert get_sirrematic_with_verb_enjambment(previous_token, next_token) == ['AUX', 'VERB']
+    monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
+    enjambment = get_enjambment("text")
+    assert enjambment == {}
