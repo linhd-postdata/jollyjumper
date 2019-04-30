@@ -1,11 +1,8 @@
 import re
 
-ENJAMBMENT_PREPOSITIONS = (
-    "a", "al", "ante", "bajo", "con", "contra", "desde", "en", "entre", "hacia",
-    "hasta", "para",
-    "por", "según", "sin", "sobre", "tras", "mediante", "durante", "salvo",
-    "excepto", "cabe",
-    "so")
+ENJAMBMENT_PREPOSITIONS = ("a", "al", "ante", "bajo", "con", "contra", "desde", "en", "entre",
+                           "hacia", "hasta", "para", "por", "según", "sin", "sobre", "tras",
+                           "mediante", "durante", "salvo", "excepto", "cabe", "so")
 
 
 def get_sirrematic_enjambment(previous_token, next_token):

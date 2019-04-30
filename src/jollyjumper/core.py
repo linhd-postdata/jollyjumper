@@ -18,7 +18,7 @@ def get_enjambment(text):
                         'sirrematic_with_verb', 'link',
                         'sirrematic_prepositional_without_de',
                         'sirrematic_prepositional',
-                        'sirrematic_prepositional_prep_before_noun_or_adjective']
+                        'sirrematic_prepositional_before_noun_adjective']
     enjambments = {}
     nlp = load_pipeline()
     doc = nlp(text)
@@ -26,8 +26,7 @@ def get_enjambment(text):
         # We look for tmesis before any other enjambment type because the text
         # has to be preprocessed
         if token._.has_tmesis:  # noqa
-            enjambments[token._.line] = (
-            'tmesis', token.text.split('-\n'))  # noqa
+            enjambments[token._.line] = ('tmesis', token.text.split('-\n'))  # noqa
             continue
         # Last token cannot be the beginning of an enjambment
         # (unless it's tmesis)
@@ -37,14 +36,12 @@ def get_enjambment(text):
         next_token = doc[token.i + 1]
         # We look for enjambment when if there are words
         # before and after a newline character
-        if token.text == '\n' \
-                and not previous_token.is_punct and not next_token.is_punct:
+        if token.text == '\n' and not previous_token.is_punct and not next_token.is_punct:
             for enjambment_type in enjambment_types:
                 enjambment_func = rules.get(f'get_{enjambment_type}_enjambment',
                                             lambda *_: None)
                 enjambment = enjambment_func(previous_token, next_token)
                 if enjambment:
-                    enjambments[token._.line] = (
-                    enjambment_type, enjambment)  # noqa
+                    enjambments[token._.line] = (enjambment_type, enjambment)  # noqa
                     break
     return enjambments
