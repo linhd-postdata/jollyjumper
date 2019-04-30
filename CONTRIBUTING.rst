@@ -17,8 +17,8 @@ When `reporting a bug <https://github.com/linhd-postdata/jollyjumper/issues>`_ p
 Documentation improvements
 ==========================
 
-SKAS could always use more documentation, whether as part of the
-official SKAS docs, in docstrings, or even on the web in blog posts,
+JOLLYJUMPER could always use more documentation, whether as part of the
+official JOLLYJUMPER docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Feature requests and feedback
@@ -35,13 +35,13 @@ If you are proposing a feature:
 Development
 ===========
 
-To set up `skas` for local development:
+To set up `jollyjumper` for local development:
 
-1. Fork `skas <https://github.com/linhd-postdata/jollyjumper>`_
+1. Fork `jollyjumper <https://github.com/linhd-postdata/jollyjumper>`_
    (look for the "Fork" button).
 2. Clone your fork locally::
 
-    git clone git@github.com:your_name_here/skas.git
+    git clone git@github.com:your_name_here/jollyjumper.git
 
 3. Create a branch for local development::
 
@@ -74,7 +74,7 @@ For merging, you should:
 4. Add yourself to ``AUTHORS.rst``.
 
 .. [1] If you don't have all the necessary python versions available locally you can rely on Travis - it will
-       `run the tests <https://travis-ci.org/postdataproject/skas/pull_requests>`_ for each change you add in the pull request.
+       `run the tests <https://travis-ci.org/linhd-postdata/jollyjumper/pull_requests>`_ for each change you add in the pull request.
 
        It will be slower though ...
 
