@@ -26,7 +26,7 @@ def test_get_enjambment_tmesis(monkeypatch):
 
     monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
     enjambment = get_enjambment("text")
-    assert enjambment == {1: ('tmesis', ['mi', 'ra'])}
+    assert enjambment == {1: {"type": 'tmesis', "on": ['mi', 'ra']}}
 
 
 def test_get_enjambment_no_tmesis(monkeypatch):
@@ -57,7 +57,7 @@ def test_get_enjambment(monkeypatch):
 
     monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
     enjambment = get_enjambment("text")
-    assert enjambment == {0: ('sirrematic', ['ADJ', 'NOUN'])}
+    assert enjambment == {0: {"type": 'sirrematic', "on": ['ADJ', 'NOUN']}}
 
 
 def test_get_enjambment_empty(monkeypatch):
