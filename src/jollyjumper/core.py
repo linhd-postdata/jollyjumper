@@ -26,7 +26,7 @@ def get_enjambment(text):
         # We look for tmesis before any other enjambment type because the text
         # has to be preprocessed
         if token._.has_tmesis:  # noqa
-            enjambments[token._.line] = ('tmesis', token.text.split('-\n'))  # noqa
+            enjambments[token._.line] = {"type": 'tmesis', "on": token.text.split('-\n')}  # noqa
             continue
         # Last token cannot be the beginning of an enjambment
         # (unless it's tmesis)
@@ -42,6 +42,6 @@ def get_enjambment(text):
                                             lambda *_: None)
                 enjambment = enjambment_func(previous_token, next_token)
                 if enjambment:
-                    enjambments[token._.line] = (enjambment_type, enjambment)  # noqa
+                    enjambments[token._.line] = {"type": enjambment_type, "on": enjambment}  # noqa
                     break
     return enjambments
