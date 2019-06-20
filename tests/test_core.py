@@ -8,6 +8,9 @@ class TokenMock(mock.MagicMock):
     _ = property(lambda self: mock.Mock(has_tmesis=self.has_tmesis,
                                         line=self.line))
 
+    def __isinstance__(self, token):  # noqa
+        return True
+
     @staticmethod
     def is_ancestor(token):  # noqa
         return True
@@ -26,6 +29,19 @@ def test_get_enjambment_tmesis(monkeypatch):
 
     monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
     enjambment = get_enjambment("text")
+    assert enjambment == {1: {"type": 'tmesis', "on": ['mi', 'ra']}}
+
+
+def test_get_enjambment_spacy_doc(monkeypatch):
+    token = TokenMock(text="mi-\nra", i=0, is_punct=False, has_tmesis=True, line=1)
+
+    def mockreturn(lang=None):
+        return lambda _: [
+            token
+        ]
+
+    monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
+    enjambment = get_enjambment(token)
     assert enjambment == {1: {"type": 'tmesis', "on": ['mi', 'ra']}}
 
 

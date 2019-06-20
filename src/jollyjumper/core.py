@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # Rules are based on previous work from Pablo Ruiz
 # https://github.com/postdataproject/skas-archived/blob/devel/skas/phonmet/syll/grapheme2syllable.py
+from spacy.tokens import Doc
 from .pipeline import load_pipeline
 from .rules import rules
 
@@ -20,8 +21,11 @@ def get_enjambment(text):
                         'sirrematic_prepositional',
                         'sirrematic_prepositional_before_noun_adjective']
     enjambments = {}
-    nlp = load_pipeline()
-    doc = nlp(text)
+    if isinstance(text, Doc):
+        doc = text
+    else:
+        nlp = load_pipeline()
+        doc = nlp(text)
     for token in doc:
         # We look for tmesis before any other enjambment type because the text
         # has to be preprocessed
