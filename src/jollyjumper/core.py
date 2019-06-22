@@ -1,7 +1,6 @@
 #!/usr/bin/python
-# Rules are based on previous work from Pablo Ruiz
-# https://github.com/postdataproject/skas-archived/blob/devel/skas/phonmet/syll/grapheme2syllable.py
 from spacy.tokens import Doc
+
 from .pipeline import load_pipeline
 from .rules import rules
 
