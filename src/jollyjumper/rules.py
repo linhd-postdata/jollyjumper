@@ -1,3 +1,5 @@
+# Rules are based on previous work from Pablo Ruiz
+
 import re
 
 ENJAMBMENT_PREPOSITIONS = ("a", "al", "ante", "bajo", "con", "contra", "desde", "en", "entre",
