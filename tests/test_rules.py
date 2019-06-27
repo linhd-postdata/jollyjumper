@@ -1,5 +1,6 @@
 from unittest import mock
 
+from jollyjumper import get_enjambment
 from jollyjumper.rules import get_link_enjambment
 from jollyjumper.rules import get_sirrematic_enjambment
 from jollyjumper.rules import get_sirrematic_orational_enjambment
@@ -357,3 +358,10 @@ def test_get_link_enjambment_nsubj_dummy():
     next_token = TokenMock(pos_="dummy", tag_="AdpType=Prep", n_rights=1, head=previous_token)
     output = get_link_enjambment(previous_token, next_token)
     assert output == ['dummy', 'dummy']
+
+
+def test_get_scansion_breaks_link_enjambment_rule():
+    text = """  No cura si la fama
+canta con voz su nombre pregonera,"""
+    output = get_enjambment(text)
+    assert output == {}
