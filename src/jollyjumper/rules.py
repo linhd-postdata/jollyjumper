@@ -171,7 +171,7 @@ def get_link_enjambment(previous_token, next_token):
     if next_token.n_rights > 0:
         if previous_token.dep_ in ('ROOT', 'nsubj') \
                 and (
-                previous_token in next_token.head
+                previous_token is next_token.head
                 or next_token.nbor().is_ancestor(previous_token)):
             return [previous_token.pos_, next_token.pos_]
     return None
