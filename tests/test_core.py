@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from unittest import mock
 
 import jollyjumper.core
@@ -99,3 +100,12 @@ def test_get_enjambment_no_monkeypatch():
     text = "maña-\nna"
     output = get_enjambment(text)
     assert output == {0: {'type': 'tmesis', 'on': ['maña', 'na']}}
+
+
+def test_get_enjambment_oov_no_monkeypatch():
+    text = "Yo miserable-\nmente. El coche-\ncito. No más-\nencabalgamiento."
+    output = get_enjambment(text)
+    assert output == {
+        0: {'type': 'tmesis', 'on': ['miserable', 'mente']},
+        1: {'type': 'tmesis', 'on': ['coche', 'cito']},
+    }

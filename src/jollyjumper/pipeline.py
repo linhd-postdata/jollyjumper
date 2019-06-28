@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 
 import spacy
@@ -41,7 +42,6 @@ def load_pipeline(lang=None):
     nlp.add_pipe(TmesisMatcher(nlp), name="tmesis", first=True)
     nlp.remove_pipe("affixes") if nlp.has_pipe("affixes") else None
     nlp.add_pipe(AffixesMatcher(nlp), name="affixes", after="tmesis")
-
     return nlp
 
 
@@ -71,9 +71,19 @@ class TmesisMatcher:
             for _, start, end in matcher(doc):
                 span_text_raw = doc[start:end].text
                 span_text = re.sub(r"-\n", "", span_text_raw)
-                has_tmesis = span_text in lookup.values() or span_text in lookup.keys()
+                has_tmesis = (span_text in lookup.values()
+                              or span_text in lookup.keys())
+                if has_tmesis:
+                    lemma = lookup.get(span_text, span_text)
+                else:
+                    # If the regular span text is not in the dictionary,
+                    # try the lemma under regular Spacy parsing
+                    token = self.nlp(span_text)[0]
+                    lemma = token.lemma
+                    has_tmesis = (token.lemma_ in lookup.values()
+                                  or token.lemma_ in lookup.keys())
                 attrs = {
-                    "LEMMA": lookup.get(span_text, span_text),
+                    "LEMMA": lemma,
                     "_": {"has_tmesis": has_tmesis, "tmesis_text": span_text}
                 }
                 retokenizer.merge(doc[start:end], attrs=attrs)
