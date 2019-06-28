@@ -41,7 +41,7 @@ def read(*names, **kwargs):
 
 setup(
     name='jollyjumper',
-    version='0.2.0',
+    version='0.3.0',
     license='Apache Software License 2.0',
     description='Enjambment tool for Spanish texts',
     long_description='%s\n%s' % (
