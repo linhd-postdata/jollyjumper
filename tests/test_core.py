@@ -93,3 +93,9 @@ def test_get_enjambment_empty(monkeypatch):
     monkeypatch.setattr(jollyjumper.core, 'load_pipeline', mockreturn)
     enjambment = get_enjambment("text")
     assert enjambment == {}
+
+
+def test_get_enjambment_no_monkeypatch():
+    text = "maña-\nna"
+    output = get_enjambment(text)
+    assert output == {0: {'type': 'tmesis', 'on': ['maña', 'na']}}
