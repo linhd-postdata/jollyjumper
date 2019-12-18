@@ -42,7 +42,7 @@ def load_pipeline(lang=None):
     """
     global _load_pipeline
     if lang is None:
-        lang = 'es_core_news_sm'
+        lang = 'es_core_news_md'
     if lang not in _load_pipeline:
         nlp = spacy.load(lang)
         nlp.tokenizer = custom_tokenizer(nlp)
