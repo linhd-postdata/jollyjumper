@@ -6,6 +6,8 @@ from spacy.matcher import Matcher
 from spacy.tokenizer import Tokenizer
 from spacy.tokens import Token
 from spacy_affixes import AffixesMatcher
+from spacy_affixes.utils import AFFIXES_SUFFIX
+from spacy_affixes.utils import load_affixes
 
 
 def custom_tokenizer(nlp):
@@ -28,21 +30,32 @@ def custom_tokenizer(nlp):
                      infix_finditer=infix_re.finditer, token_match=None)
 
 
+# load_pipeline should work as a "singleton"
+_load_pipeline = {}
+
+
 def load_pipeline(lang=None):
     """
     Loads the new pipeline with the custom tokenizer
     :param lang: Spacy language model
     :return: New custom language model
     """
+    global _load_pipeline
     if lang is None:
         lang = 'es_core_news_md'
-    nlp = spacy.load(lang)
-    nlp.tokenizer = custom_tokenizer(nlp)
-    nlp.remove_pipe("tmesis") if nlp.has_pipe("tmesis") else None
-    nlp.add_pipe(TmesisMatcher(nlp), name="tmesis", first=True)
-    nlp.remove_pipe("affixes") if nlp.has_pipe("affixes") else None
-    nlp.add_pipe(AffixesMatcher(nlp), name="affixes", after="tmesis")
-    return nlp
+    if lang not in _load_pipeline:
+        nlp = spacy.load(lang)
+        nlp.tokenizer = custom_tokenizer(nlp)
+        nlp.remove_pipe("tmesis") if nlp.has_pipe("tmesis") else None
+        nlp.add_pipe(TmesisMatcher(nlp), name="tmesis", first=True)
+        nlp.remove_pipe("affixes") if nlp.has_pipe("affixes") else None
+        suffixes = {k: v for k, v in load_affixes().items() if
+                    k.startswith(AFFIXES_SUFFIX)}
+        affixes_matcher = AffixesMatcher(nlp, split_on=["VERB", "AUX"],
+                                         rules=suffixes)
+        nlp.add_pipe(affixes_matcher, name="affixes", first=True)
+        _load_pipeline[lang] = nlp
+    return _load_pipeline[lang]
 
 
 class TmesisMatcher:
@@ -52,6 +65,7 @@ class TmesisMatcher:
 
     def __init__(self, nlp):
         self.nlp = nlp
+        self.lookup = self.nlp.vocab.lookups.get_table("lemma_lookup")
         if not Token.has_extension("has_tmesis"):
             Token.set_extension("has_tmesis", default=False)
             Token.set_extension("tmesis_text", default="")
@@ -67,7 +81,7 @@ class TmesisMatcher:
             {"TEXT": {"REGEX": r"^[a-zñ]+"}},
         ])
         with doc.retokenize() as retokenizer:
-            lookup = self.nlp.Defaults.lemma_lookup
+            lookup = self.lookup
             for _, start, end in matcher(doc):
                 span_text_raw = doc[start:end].text
                 span_text = re.sub(r"-\n", "", span_text_raw)
