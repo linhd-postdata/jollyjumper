@@ -28,43 +28,29 @@ class TokenMock(mock.MagicMock):
 
 
 def test_get_sirrematic_enjambment_adj_noun():
-    previous_token = TokenMock(pos_="ADJ")
-    next_token = TokenMock(pos_="NOUN")
+    previous_token = TokenMock(pos_="ADJ", n_rights=1)
+    next_token = TokenMock(pos_="NOUN", n_rights=0)
     output = get_sirrematic_enjambment(previous_token, next_token)
     assert output == ['ADJ', 'NOUN']
 
 
-def test_get_sirrematic_enjambment_adv_noun():
-    previous_token = TokenMock(pos_="ADV")
-    next_token = TokenMock(pos_="NOUN")
-    output = get_sirrematic_enjambment(previous_token, next_token)
-    assert output == ['ADV', 'NOUN']
-
-
 def test_get_sirrematic_enjambment_adp_adj():
-    previous_token = TokenMock(pos_="ADP")
-    next_token = TokenMock(pos_="ADJ")
+    previous_token = TokenMock(pos_="ADP", n_rights=1)
+    next_token = TokenMock(pos_="ADJ", n_rights=0)
     output = get_sirrematic_enjambment(previous_token, next_token)
     assert output == ['ADP', 'ADJ']
 
 
-def test_get_sirrematic_enjambment_adp_noun():
-    previous_token = TokenMock(pos_="ADP")
-    next_token = TokenMock(pos_="NOUN")
-    output = get_sirrematic_enjambment(previous_token, next_token)
-    assert output == ['ADP', 'NOUN']
-
-
 def test_get_sirrematic_enjambment_adj_verb():
-    previous_token = TokenMock(pos_="ADJ")
-    next_token = TokenMock(pos_="ADV")
+    previous_token = TokenMock(pos_="ADJ", n_rights=1)
+    next_token = TokenMock(pos_="ADV", n_rights=0)
     output = get_sirrematic_enjambment(previous_token, next_token)
     assert output == ['ADJ', 'ADV']
 
 
 def test_get_sirrematic_enjambment_adv_verb():
-    previous_token = TokenMock(pos_="ADV")
-    next_token = TokenMock(pos_="VERB")
+    previous_token = TokenMock(pos_="ADV", n_rights=1)
+    next_token = TokenMock(pos_="VERB", n_rights=0)
     output = get_sirrematic_enjambment(previous_token, next_token)
     assert output == ['ADV', 'VERB']
 

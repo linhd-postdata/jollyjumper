@@ -61,13 +61,13 @@ def test_get_enjambment_no_tmesis(monkeypatch):
 def test_get_enjambment(monkeypatch):
     def mockreturn(lang=None):
         return lambda _: [
-            TokenMock(n_rights=1, tag_="NumType", pos_="ADJ", text="mi", i=0,
+            TokenMock(n_rights=0, tag_="NumType", pos_="ADJ", text="mi", i=0,
                       is_punct=False, has_tmesis=False,
                       line=0),
-            TokenMock(n_rights=1, tag_="NumType", pos_="SPACE", text="\n", i=1,
+            TokenMock(n_rights=0, tag_="NumType", pos_="SPACE", text="\n", i=1,
                       is_punct=False, has_tmesis=False,
                       line=0),
-            TokenMock(n_rights=1, tag_="NumType", pos_="NOUN", text="casa", i=2,
+            TokenMock(n_rights=0, tag_="NumType", pos_="NOUN", text="casa", i=2,
                       is_punct=False, has_tmesis=False,
                       line=1)
         ]
@@ -80,13 +80,13 @@ def test_get_enjambment(monkeypatch):
 def test_get_enjambment_empty(monkeypatch):
     def mockreturn(lang=None):
         return lambda _: [
-            TokenMock(n_rights=1, tag_="NumType", pos_="ADJ", text="mi-", i=0,
+            TokenMock(n_rights=0, tag_="NumType", pos_="ADJ", text="mi-", i=0,
                       is_punct=False, has_tmesis=False,
                       line=1),
-            TokenMock(n_rights=1, tag_="NumType", pos_="SPACE", text="\n", i=0,
+            TokenMock(n_rights=0, tag_="NumType", pos_="SPACE", text="\n", i=0,
                       is_punct=False, has_tmesis=False,
                       line=1),
-            TokenMock(n_rights=1, tag_="NumType", pos_="NOUN", text="ro", i=0,
+            TokenMock(n_rights=0, tag_="NumType", pos_="NOUN", text="ro", i=0,
                       is_punct=False, has_tmesis=False,
                       line=2)
         ]
@@ -103,9 +103,9 @@ def test_get_enjambment_no_monkeypatch():
 
 
 def test_get_enjambment_oov_no_monkeypatch():
-    text = "Yo miserable-\nmente. El coche-\ncito. No más-\nencabalgamiento."
+    text = "Yo estoy depri-\nmente. El coche-\ncito. No más-\nencabalgamiento."
     output = get_enjambment(text)
     assert output == {
-        0: {'type': 'tmesis', 'on': ['miserable', 'mente']},
+        0: {'type': 'tmesis', 'on': ['depri', 'mente']},
         1: {'type': 'tmesis', 'on': ['coche', 'cito']},
     }

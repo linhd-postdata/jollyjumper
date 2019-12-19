@@ -17,7 +17,7 @@ def get_enjambment(text):
                         'sirrematic_orational', 'relation_words_verbs',
                         'sirrematic_with_verb', 'link',
                         'sirrematic_prepositional_without_de',
-                        'sirrematic_prepositional',
+                        'sirrematic_prepositional', 'orational',
                         'sirrematic_prepositional_before_noun_adjective']
     enjambments = {}
     if isinstance(text, Doc):
